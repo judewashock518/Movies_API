@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -23,14 +24,17 @@ def movies_list(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 def movie_detail(request, pk):
-    try:
-        movie = Movie.objects.get(pk=pk)
+    movie = get_object_or_404(Movie, pk=pk)
+    if request.method == 'GET':
         serializer = MovieSerializer(movie)
         return Response(serializer.data)
-    except Movie.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    elif request.method == 'PUT':
+        serializer = MovieSerializer(movie, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 
