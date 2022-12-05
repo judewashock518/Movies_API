@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 mysql-connector-python = "*"
 djangorestframework = "*"
+tzdata = "*"
 
 [dev-packages]
 
